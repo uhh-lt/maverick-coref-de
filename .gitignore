@@ -1,4 +1,6 @@
 *.pyc
 *.conll
 *.jsonlines
+/*.egg-info
 /experiments
+/dist

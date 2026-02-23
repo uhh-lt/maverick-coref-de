@@ -1,7 +1,7 @@
 [project]
 name = "maverick-coref-de"
 description = "co-reference resolution for German using the Maverick system"
-version = "1.0.5"
+version = "1.0.6"
 requires-python = ">=3.10"
 license = "CC-BY-NC-SA-4.0"
 authors = [
@@ -10,7 +10,7 @@ authors = [
 ]
 readme = "README.md"
 dependencies = [
-    "transformers[torch] >= 4.48",
+    "transformers[torch] == 4.49",
     "pytorch-lightning",
     "pandas",
     "hydra-core",
@@ -32,4 +32,4 @@ packages = ["maverick_de", "maverick_de.models", "maverick_de.data", "maverick_d
 
 
 [project.urls]
-Repository = "https://github.com/fynnos/maverick-coref.git"
+Repository = "https://github.com/uhh-lt/maverick-coref-de.git"

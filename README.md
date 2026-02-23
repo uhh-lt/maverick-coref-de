@@ -45,6 +45,112 @@ For a sample input, the model will a dictionary containing:
 - `clusters_text_mentions`, a list of clusters containing mentions in plain text.
 
 
+# Container
+
+Run container, e.g. `docker run --rm --name maverick-de -p 8080:8080 --gpus '"device=0"' uhhlt/maverick-de:latest`
+
+It supports two environment parameters: `MODEL_NAME` (to use another model than the default) and `DEVICE` (defaults to `cuda`, you can set `cpu` to try it without a GPU...)
+
+Support `plain`, `tokenized`, and `tokenized+sentence split` (recommended) text:
+
+```sh
+curl -X 'POST' \
+  'http://localhost:8080/predict' \
+  -H 'accept: application/json' \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "tokens": 
+      "Alice verkauft ihr altes Fahrrad. Sie braucht es nicht mehr."
+}'
+```
+
+or
+
+```sh
+curl -X 'POST' \
+  'http://localhost:8080/predict' \
+  -H 'accept: application/json' \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "tokens": 
+      ["Alice",  "verkauft", "ihr", "altes", "Fahrrad","." ,"Sie", "braucht", "es", "nicht", "mehr", "."]
+}'
+```
+
+or
+
+```sh
+curl -X 'POST' \
+  'http://localhost:8080/predict' \
+  -H 'accept: application/json' \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "tokens": 
+      [["Alice",  "verkauft", "ihr", "altes", "Fahrrad","."],[ "Sie", "braucht", "es", "nicht", "mehr", "."]]
+}'
+```
+
+Result:
+```json
+{
+  "tokens": [
+    "Alice",
+    "verkauft",
+    "ihr",
+    "altes",
+    "Fahrrad",
+    ".",
+    "Sie",
+    "braucht",
+    "es",
+    "nicht",
+    "mehr",
+    "."
+  ],
+  "clusters_token_offsets": [
+    [
+      [
+        0,
+        0
+      ],
+      [
+        2,
+        2
+      ],
+      [
+        6,
+        6
+      ]
+    ],
+    [
+      [
+        2,
+        4
+      ],
+      [
+        8,
+        8
+      ]
+    ]
+  ],
+  "clusters_char_offsets": null,
+  "clusters_token_text": [
+    [
+      "Alice",
+      "ihr",
+      "Sie"
+    ],
+    [
+      "ihr altes Fahrrad",
+      "es"
+    ]
+  ],
+  "clusters_char_text": null
+}
+```
+
+
+
 # Training
 
 Create a Python venv and install from source.
@@ -61,7 +167,6 @@ pip install -e .
 * Adjust `conf/model/mes/<your encoder model>.yaml` to 
 * Adjust `conf/root.yaml` to use the your dataset and your encoder model
 * Run `CUDA_VISIBLE_DEVICES=X python maverick_de/train.py`
-
 
 
 # Citation
