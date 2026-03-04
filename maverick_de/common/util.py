@@ -203,3 +203,52 @@ def download_load_spacy():
         download(model_name)
         nlp = spacy.load(model_name, exclude=["tagger", "parser", "lemmatizer", "ner", "textcat"])
     return nlp
+
+
+def load_encoder_model(huggingface_model_name, huggingface_revision=None, device_map="cuda"):
+    """
+    Load encoder model with support for both standard HuggingFace models and LLM2Vec models.
+
+    Args:
+        huggingface_model_name (str): The model name/path
+        huggingface_revision (str, optional): Model revision
+        device_map (str): Device mapping for model loading
+
+    Returns:
+        tuple: (model, config) - The loaded model and its configuration
+    """
+    from transformers import AutoConfig, AutoModel
+
+    # Check if this is an LLM2Vec model by looking for specific patterns
+    is_llm2vec = any(pattern in huggingface_model_name for pattern in ["LLaMmlein2Vec", "LLM2Vec", "llm2vec", "2vec"])
+
+    if is_llm2vec:
+        try:
+            import torch
+            from llm2vec import LLM2Vec
+
+            # Initialize LLM2Vec model
+            model = LLM2Vec.from_pretrained(
+                huggingface_model_name,
+                device_map=device_map,
+                revision=huggingface_revision,
+            )
+
+            # Get the underlying transformer model and config
+            # LLM2Vec wraps the transformer model, so we need to access it
+            encoder = model.model  # The underlying transformer model
+            config = model.model.config  # The configuration
+
+            return encoder, config
+
+        except ImportError:
+            raise ImportError(
+                "llm2vec library is required for LLM2Vec models. Please install it with: pip install llm2vec"
+            )
+    else:
+        # Standard HuggingFace model loading
+        encoder = AutoModel.from_pretrained(
+            huggingface_model_name, revision=huggingface_revision, device_map=device_map
+        )
+        config = AutoConfig.from_pretrained(huggingface_model_name, revision=huggingface_revision)
+        return encoder, config

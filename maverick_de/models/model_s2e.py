@@ -13,8 +13,9 @@ class Maverick_s2e(torch.nn.Module):
         # document transformer encoder
         self.encoder_hf_model_name = kwargs["huggingface_model_name"]
         self.encoder_hf_revision = kwargs.get("huggingface_revision", None)
-        self.encoder = AutoModel.from_pretrained(self.encoder_hf_model_name, revision=self.encoder_hf_revision, device_map='cuda')
-        self.encoder_config = AutoConfig.from_pretrained(self.encoder_hf_model_name, revision=self.encoder_hf_revision)
+        self.encoder, self.encoder_config = load_encoder_model(
+            self.encoder_hf_model_name, self.encoder_hf_revision, device_map="cuda"
+        )
         # self.encoder_config.attention_window = 1024
         # self.encoder.resize_token_embeddings(self.encoder.embeddings.word_embeddings.num_embeddings + 3)
 

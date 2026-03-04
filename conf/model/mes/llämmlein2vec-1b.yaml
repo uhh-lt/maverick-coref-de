@@ -9,17 +9,14 @@ module:
     weight_decay: 0.01
     scale_parameter: False
     relative_step: False
-  head_lr: 2e-4
-  model_lr: 1e-5
-  wd: 0.001
   lr_scheduler:     
-    num_warmup_steps: 10635 # 6381 for tuba10, 6265 for se10
-    num_training_steps: 106350 # 80000 default, 50000 for se10?
-  opt: "custom" #RAdam
+    num_warmup_steps: 6381 # 6381 for tuba10, 6265 for se10
+    num_training_steps: 80000 # 80000 default, 50000 for se10?
+  opt: "Adafactor" #RAdam
   model:
     _target_: models.model_mes.Maverick_mes
-    language_model: "modern-gbert-1b"
-    huggingface_model_name: "LSX-UniWue/ModernGBERT_1B"
+    language_model: "llamalein2vec-1b"
+    huggingface_model_name: "LSX-UniWue/LLaMmlein2Vec_1B"
     huggingface_revision: None
     freeze_encoder: False
     span_representation: "concat_start_end"

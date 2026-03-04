@@ -9,14 +9,14 @@ module:
     weight_decay: 0.01
     scale_parameter: False
     relative_step: False
-  lr_scheduler:     
+  lr_scheduler:
     num_warmup_steps: 6381 # 6381 for tuba10, 6265 for se10
     num_training_steps: 80000 # 80000 default, 50000 for se10?
   opt: "Adafactor" #RAdam
   model:
     _target_: models.model_mes.Maverick_mes
-    language_model: "llamalein2vec-7b"
-    huggingface_model_name: "replace me with HF model name or local path"
+    language_model: "llamalein2vec-120m"
+    huggingface_model_name: "LSX-UniWue/LLaMmlein2Vec_120M"
     huggingface_revision: None
     freeze_encoder: False
     span_representation: "concat_start_end"
